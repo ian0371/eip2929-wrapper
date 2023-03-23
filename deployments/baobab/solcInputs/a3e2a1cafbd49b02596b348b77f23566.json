@@ -1,0 +1,37 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/EIP2929Wrapper.sol": {
+      "content": "pragma solidity ^0.4.18;\n\n/**\n * @title EIP2929Proxy\n * @dev Gives the possibility to delegate any call to a foreign implementation.\n */\ncontract EIP2929Wrapper {\n    /**\n     * @dev Fallback function allowing to perform a delegatecall to the given implementation.\n     * This function will return whatever the implementation call returns\n     */\n\n    // PAYLOAD: PRE_SLOAD_TARGET | CALL_TARGET | CALL_DATA\n    function() public payable {\n        assembly {\n            let pre_sload_offset := 0\n            let calltarget_offset := 32\n            let calldata_offset := 64\n\n            let prefetch := calldataload(pre_sload_offset)\n            let calltarget := calldataload(calltarget_offset)\n            // let newcalldata := calldataload(calldata_offset)\n            let newcalldatasize := sub(calldatasize, calldata_offset)\n\n            // PRE-SLOAD\n            // let _unused := sload(prefetch)\n\n            // CALL\n            let ptr := mload(0x40)\n            calldatacopy(ptr, calldata_offset, newcalldatasize) // remove the first arg\n\n            let result := call(gas, calltarget, callvalue(), ptr, newcalldatasize, 0, 0)\n            let size := returndatasize\n            returndatacopy(ptr, 0, size)\n\n            switch result\n            case 0 {\n                revert(ptr, size)\n            }\n            default {\n                return(ptr, size)\n            }\n        }\n    }\n}\n"
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates",
+          "devdoc",
+          "userdoc"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    }
+  }
+}
