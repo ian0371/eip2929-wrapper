@@ -1,38 +1,104 @@
 {
-  "address": "0x82B2232c3a1dcF59e7Cc453096191d9fb188C43E",
+  "address": "0xCA6832828915de91F5cD1dB830061f4A07fe22eF",
   "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_prefetch",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_to",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes",
+          "name": "_prefetchCallArgs",
+          "type": "bytes"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
     {
       "stateMutability": "payable",
       "type": "fallback"
+    },
+    {
+      "inputs": [],
+      "name": "prefetch",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "prefetchCallArgs",
+      "outputs": [
+        {
+          "internalType": "bytes",
+          "name": "",
+          "type": "bytes"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "to",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "stateMutability": "payable",
+      "type": "receive"
     }
   ],
-  "transactionHash": "0x77c56337db9c8aeb89dc91ed1919ce8e053af3fa8319cc40636cde828147874a",
+  "transactionHash": "0x31d36387103dada7b7527844e1b7dc43be135fdc345800a3e1a7a5b1279cf010",
   "receipt": {
     "to": null,
     "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-    "contractAddress": "0x82B2232c3a1dcF59e7Cc453096191d9fb188C43E",
+    "contractAddress": "0xCA6832828915de91F5cD1dB830061f4A07fe22eF",
     "transactionIndex": 1,
-    "gasUsed": "118293",
+    "gasUsed": "464900",
     "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "blockHash": "0x419423e95b8f436acfdacc0caf936dfe1c17f53011b93fc92f8020ac1087fc8c",
-    "transactionHash": "0x77c56337db9c8aeb89dc91ed1919ce8e053af3fa8319cc40636cde828147874a",
+    "blockHash": "0x1f3a76ffaf9d2848c61ebe5fc2d1090e40c8152b45b11b2bfc670b21ed92f956",
+    "transactionHash": "0x31d36387103dada7b7527844e1b7dc43be135fdc345800a3e1a7a5b1279cf010",
     "logs": [],
-    "blockNumber": 120238656,
-    "cumulativeGasUsed": "269104",
+    "blockNumber": 120245049,
+    "cumulativeGasUsed": "615711",
     "status": 1,
     "byzantium": true
   },
-  "args": [],
-  "numDeployments": 11,
-  "solcInputHash": "90be16b8eb5dfa21d4bc1e734fa322da",
-  "metadata": "{\"compiler\":{\"version\":\"0.8.18+commit.87f61d96\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"stateMutability\":\"payable\",\"type\":\"fallback\"}],\"devdoc\":{\"details\":\"Gives the possibility to delegate any call to a foreign implementation.\",\"kind\":\"dev\",\"methods\":{},\"title\":\"EIP2929Proxy\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/EIP2929Wrapper.sol\":\"EIP2929Wrapper\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/EIP2929Wrapper.sol\":{\"content\":\"pragma solidity ^0.8.0;\\n\\n/**\\n * @title EIP2929Proxy\\n * @dev Gives the possibility to delegate any call to a foreign implementation.\\n */\\ncontract EIP2929Wrapper {\\n    /**\\n     * @dev Fallback function allowing to perform a delegatecall to the given implementation.\\n     * This function will return whatever the implementation call returns\\n     */\\n\\n    fallback() external payable {\\n        address prefetch = 0x6a9880894a09873B908933F1528d368ffbc465Ef;\\n        address to = 0x86eaCD34aeae879543C522d503Fa3204fdA6fF34;\\n\\n        // PRE-SLOAD by calling prefetch contract\\n        // NOTE: this MUST NOT revert\\n        prefetch.call{value: msg.value}(\\\"\\\");\\n\\n        assembly {\\n            // CALL\\n            calldatacopy(0, 0, calldatasize())\\n\\n            let result := call(gas(), to, callvalue(), 0, calldatasize(), 0, 0)\\n\\n            returndatacopy(0, 0, returndatasize())\\n\\n            switch result\\n            case 0 {\\n                revert(0, returndatasize())\\n            }\\n            default {\\n                return(0, returndatasize())\\n            }\\n        }\\n    }\\n}\\n\",\"keccak256\":\"0x4c4d69851a77496d553d9b1e4f36ad6ddab3320e91502099a45d0bc3a98e6c52\"}},\"version\":1}",
-  "bytecode": "0x608060405234801561001057600080fd5b5060cf8061001f6000396000f3fe60806040819052736a9880894a09873b908933f1528d368ffbc465ef907386eacd34aeae879543c522d503fa3204fda6ff349082903490600081818185875af1925050503d8060008114606d576040519150601f19603f3d011682016040523d82523d6000602084013e6072565b606091505b505050366000803760008036600034855af13d6000803e8080156094573d6000f35b3d6000fdfea264697066735822122030fdc3c0131e8e4b9b60f69615e36f8db3b1c678f8fced7e3cfdf956d4bbbac064736f6c63430008120033",
-  "deployedBytecode": "0x60806040819052736a9880894a09873b908933f1528d368ffbc465ef907386eacd34aeae879543c522d503fa3204fda6ff349082903490600081818185875af1925050503d8060008114606d576040519150601f19603f3d011682016040523d82523d6000602084013e6072565b606091505b505050366000803760008036600034855af13d6000803e8080156094573d6000f35b3d6000fdfea264697066735822122030fdc3c0131e8e4b9b60f69615e36f8db3b1c678f8fced7e3cfdf956d4bbbac064736f6c63430008120033",
+  "args": [
+    "0x8eC709853297a8B93fFbD64FA05E50735eAB54E6",
+    "0xEc151F4d090CA33bfA3288da951991b342F01939",
+    "0x8381f58a"
+  ],
+  "numDeployments": 14,
+  "solcInputHash": "e8b50766118f9c37ff175e630f17a997",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.18+commit.87f61d96\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_prefetch\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_to\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"_prefetchCallArgs\",\"type\":\"bytes\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"stateMutability\":\"payable\",\"type\":\"fallback\"},{\"inputs\":[],\"name\":\"prefetch\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"prefetchCallArgs\",\"outputs\":[{\"internalType\":\"bytes\",\"name\":\"\",\"type\":\"bytes\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"to\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"stateMutability\":\"payable\",\"type\":\"receive\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/EIP2929Wrapper.sol\":\"EIP2929Wrapper\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/EIP2929Wrapper.sol\":{\"content\":\"pragma solidity ^0.8.0;\\n\\ncontract EIP2929Wrapper {\\n    // this wrapper will call `prefetch` address with `prefetchCallArg` before\\n    // calling `to` address with `msg.calldata`\\n    // Note that calling prefetch with prefetchCallArgs MUST NOT revert.\\n    address public prefetch;\\n    address public to;\\n    bytes public prefetchCallArgs;\\n\\n    constructor(address _prefetch, address _to, bytes memory _prefetchCallArgs) {\\n        prefetch = _prefetch; // ERC1967Proxy\\n        to = _to; // Entrypoint\\n        prefetchCallArgs = _prefetchCallArgs;\\n    }\\n\\n    fallback() external payable {\\n        _preloadAndCall();\\n    }\\n\\n    receive() external payable {\\n        _preloadAndCall();\\n    }\\n\\n    function _preloadAndCall() private {\\n        // NOTE: this MUST NOT revert\\n        prefetch.call(prefetchCallArgs);\\n\\n        address _to = to;\\n\\n        assembly {\\n            // CALL\\n            calldatacopy(0, 0, calldatasize())\\n\\n            let result := call(gas(), _to, callvalue(), 0, calldatasize(), 0, 0)\\n\\n            returndatacopy(0, 0, returndatasize())\\n\\n            switch result\\n            case 0 {\\n                revert(0, returndatasize())\\n            }\\n            default {\\n                return(0, returndatasize())\\n            }\\n        }\\n    }\\n}\\n\",\"keccak256\":\"0xa2f670e5e8779b8271c5734de723983a08379759a4083460eb178e45d0027519\"}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b5060405161063538038061063583398101604081905261002f916100a6565b600080546001600160a01b038086166001600160a01b0319928316179092556001805492851692909116919091179055600261006b8282610219565b505050506102d8565b80516001600160a01b038116811461008b57600080fd5b919050565b634e487b7160e01b600052604160045260246000fd5b6000806000606084860312156100bb57600080fd5b6100c484610074565b925060206100d3818601610074565b60408601519093506001600160401b03808211156100f057600080fd5b818701915087601f83011261010457600080fd5b81518181111561011657610116610090565b604051601f8201601f19908116603f0116810190838211818310171561013e5761013e610090565b816040528281528a8684870101111561015657600080fd5b600093505b82841015610178578484018601518185018701529285019261015b565b60008684830101528096505050505050509250925092565b600181811c908216806101a457607f821691505b6020821081036101c457634e487b7160e01b600052602260045260246000fd5b50919050565b601f82111561021457600081815260208120601f850160051c810160208610156101f15750805b601f850160051c820191505b81811015610210578281556001016101fd565b5050505b505050565b81516001600160401b0381111561023257610232610090565b610246816102408454610190565b846101ca565b602080601f83116001811461027b57600084156102635750858301515b600019600386901b1c1916600185901b178555610210565b600085815260208120601f198616915b828110156102aa5788860151825594840194600190910190840161028b565b50858210156102c85787850151600019600388901b60f8161c191681555b5050505050600190811b01905550565b61034e806102e76000396000f3fe6080604052600436106100385760003560e01c8063131519811461004f5780637bf076741461008c578063ea7f4218146100ac57610047565b36610047576100456100ce565b005b6100456100ce565b34801561005b57600080fd5b5060015461006f906001600160a01b031681565b6040516001600160a01b0390911681526020015b60405180910390f35b34801561009857600080fd5b5060005461006f906001600160a01b031681565b3480156100b857600080fd5b506100c1610163565b60405161008391906101f1565b6000546040516001600160a01b03909116906100ec90600290610279565b6000604051808303816000865af19150503d8060008114610129576040519150601f19603f3d011682016040523d82523d6000602084013e61012e565b606091505b50506001546001600160a01b03169050366000803760008036600034855af13d6000803e80801561015e573d6000f35b3d6000fd5b600280546101709061023f565b80601f016020809104026020016040519081016040528092919081815260200182805461019c9061023f565b80156101e95780601f106101be576101008083540402835291602001916101e9565b820191906000526020600020905b8154815290600101906020018083116101cc57829003601f168201915b505050505081565b600060208083528351808285015260005b8181101561021e57858101830151858201604001528201610202565b506000604082860101526040601f19601f8301168501019250505092915050565b600181811c9082168061025357607f821691505b60208210810361027357634e487b7160e01b600052602260045260246000fd5b50919050565b600080835481600182811c91508083168061029557607f831692505b602080841082036102b457634e487b7160e01b86526022600452602486fd5b8180156102c857600181146102dd5761030a565b60ff198616895284151585028901965061030a565b60008a81526020902060005b868110156103025781548b8201529085019083016102e9565b505084890196505b50949897505050505050505056fea26469706673582212208ededd5a043ff007808a2b185650cd464d15aeace130ff6e455853aa3839b50b64736f6c63430008120033",
+  "deployedBytecode": "0x6080604052600436106100385760003560e01c8063131519811461004f5780637bf076741461008c578063ea7f4218146100ac57610047565b36610047576100456100ce565b005b6100456100ce565b34801561005b57600080fd5b5060015461006f906001600160a01b031681565b6040516001600160a01b0390911681526020015b60405180910390f35b34801561009857600080fd5b5060005461006f906001600160a01b031681565b3480156100b857600080fd5b506100c1610163565b60405161008391906101f1565b6000546040516001600160a01b03909116906100ec90600290610279565b6000604051808303816000865af19150503d8060008114610129576040519150601f19603f3d011682016040523d82523d6000602084013e61012e565b606091505b50506001546001600160a01b03169050366000803760008036600034855af13d6000803e80801561015e573d6000f35b3d6000fd5b600280546101709061023f565b80601f016020809104026020016040519081016040528092919081815260200182805461019c9061023f565b80156101e95780601f106101be576101008083540402835291602001916101e9565b820191906000526020600020905b8154815290600101906020018083116101cc57829003601f168201915b505050505081565b600060208083528351808285015260005b8181101561021e57858101830151858201604001528201610202565b506000604082860101526040601f19601f8301168501019250505092915050565b600181811c9082168061025357607f821691505b60208210810361027357634e487b7160e01b600052602260045260246000fd5b50919050565b600080835481600182811c91508083168061029557607f831692505b602080841082036102b457634e487b7160e01b86526022600452602486fd5b8180156102c857600181146102dd5761030a565b60ff198616895284151585028901965061030a565b60008a81526020902060005b868110156103025781548b8201529085019083016102e9565b505084890196505b50949897505050505050505056fea26469706673582212208ededd5a043ff007808a2b185650cd464d15aeace130ff6e455853aa3839b50b64736f6c63430008120033",
   "devdoc": {
-    "details": "Gives the possibility to delegate any call to a foreign implementation.",
     "kind": "dev",
     "methods": {},
-    "title": "EIP2929Proxy",
     "version": 1
   },
   "userdoc": {
@@ -41,7 +107,43 @@
     "version": 1
   },
   "storageLayout": {
-    "storage": [],
-    "types": null
+    "storage": [
+      {
+        "astId": 827,
+        "contract": "contracts/EIP2929Wrapper.sol:EIP2929Wrapper",
+        "label": "prefetch",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_address"
+      },
+      {
+        "astId": 829,
+        "contract": "contracts/EIP2929Wrapper.sol:EIP2929Wrapper",
+        "label": "to",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_address"
+      },
+      {
+        "astId": 831,
+        "contract": "contracts/EIP2929Wrapper.sol:EIP2929Wrapper",
+        "label": "prefetchCallArgs",
+        "offset": 0,
+        "slot": "2",
+        "type": "t_bytes_storage"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_bytes_storage": {
+        "encoding": "bytes",
+        "label": "bytes",
+        "numberOfBytes": "32"
+      }
+    }
   }
 }

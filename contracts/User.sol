@@ -2,19 +2,25 @@ pragma solidity ^0.8.18;
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
 contract Entrypoint {
-    function doTransfer(address payable x) public payable {
-        x.transfer(msg.value);
+    address payable public receiverProxy;
+
+    constructor(address payable _receiverProxy) {
+        receiverProxy = _receiverProxy;
     }
 
-    function doCall(address payable x) public payable {
-        x.call{value: msg.value}("");
+    function doSomethingWithTransfer() public payable {
+        receiverProxy.transfer(msg.value);
     }
 }
 
 contract Receiver {
     uint256 public number;
 
-    receive() external payable {
-        number++;
+    fallback() external payable {}
+
+    receive() external payable {}
+
+    function withdraw() external payable {
+        address(msg.sender).call{value: address(this).balance}("");
     }
 }

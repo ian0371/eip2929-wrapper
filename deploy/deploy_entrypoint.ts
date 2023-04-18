@@ -7,13 +7,16 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
 
+  const Proxy = await deployments.get("ERC1967Proxy");
+
   await deploy("Entrypoint", {
     from: deployer,
     gasLimit: 4000000,
-    args: [],
+    args: [Proxy.address],
     log: true,
   });
 };
 
 func.tags = ["Entrypoint"];
+func.dependencies = ["Proxy"];
 export default func;

@@ -7,14 +7,18 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
 
+  const Proxy = await deployments.get("ERC1967Proxy");
+  const Receiver = await deployments.get("Receiver");
+  const iface = new hre.ethers.utils.Interface(Receiver.abi);
+
   await deploy("EIP2929Wrapper", {
     from: deployer,
     gasLimit: 4000000,
-    args: [],
+    args: [Proxy.address, Receiver.address, iface.encodeFunctionData("number()")],
     log: true,
   });
 };
 
 func.tags = ["Wrapper"];
-func.dependencies = ["Counter", "Proxy"];
+func.dependencies = ["Proxy", "Receiver"];
 export default func;

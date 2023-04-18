@@ -7,16 +7,16 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  const counter = await deployments.get("Counter");
+  const Receiver = await deployments.get("Receiver");
 
   await deploy("ERC1967Proxy", {
     from: deployer,
     gasLimit: 4000000,
-    args: [counter.address, "0x"],
+    args: [Receiver.address, "0x"],
     log: true,
   });
 };
 
 func.tags = ["Proxy"];
-func.dependencies = ["Counter"];
+func.dependencies = ["Receiver"];
 export default func;
