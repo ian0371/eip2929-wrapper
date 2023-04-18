@@ -12,7 +12,7 @@ contract EIP2929Wrapper {
 
     fallback() external payable {
         address prefetch = 0x6a9880894a09873B908933F1528d368ffbc465Ef;
-        address to = 0x54e5D268d3E7f4CE6f535e8aF1C373F4dF5FFc05;
+        address to = 0x86eaCD34aeae879543C522d503Fa3204fdA6fF34;
 
         // PRE-SLOAD by calling prefetch contract
         // NOTE: this MUST NOT revert
