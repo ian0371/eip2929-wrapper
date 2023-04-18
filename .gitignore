@@ -27,7 +27,7 @@ export/
 # Development deployments
 deployments/localhost/
 deployments/hardhat/
-deployments/
+deployments/baobab/
 
 ### Node.js
 node_modules/
